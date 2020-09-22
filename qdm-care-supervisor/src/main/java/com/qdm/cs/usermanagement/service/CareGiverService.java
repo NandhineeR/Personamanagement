@@ -44,4 +44,6 @@ public interface CareGiverService {
 
 	CareGiver deleteCertificate(Long careGiverId, Integer certificateId);
 
+	List<CareGiver> getCareGiverIdName();
+
 }

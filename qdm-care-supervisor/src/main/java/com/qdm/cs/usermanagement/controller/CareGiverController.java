@@ -407,4 +407,19 @@ public class CareGiverController {
 			return response;
 		}
 	}
+	
+	@GetMapping(value="getCareGiverIdName", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getCareGiverIdName() {
+		ResponseEntity response = null;
+		List<CareGiver> caregiverlist=careGiverService.getCareGiverIdName();
+		List<Object> obj=new ArrayList<Object>();
+		for (CareGiver careGiverListing : caregiverlist) {
+			Long id=careGiverListing.getCareGiverId();
+			LabelValuePair labelvalue=new LabelValuePair(id.intValue(), careGiverListing.getCareGiverName());
+			obj.add(labelvalue);
+		}
+		response = new ResponseEntity(new ResponseInfo(ResponseType.SUCCESS.getResponseMessage(),
+				ResponseType.SUCCESS.getResponseCode(), "", obj), HttpStatus.CREATED);
+		return response;
+	}
 }

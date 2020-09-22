@@ -375,4 +375,9 @@ public class CareGiverServiceImpl implements CareGiverService {
 		return careGiver.get();
 	}
 
+	@Override
+	public List<CareGiver> getCareGiverIdName() {
+		return careGiverRepository.findAll();
+	}
+
 }
