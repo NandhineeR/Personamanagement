@@ -409,9 +409,11 @@ public class CareGiverController {
 	}
 	
 	@GetMapping(value="getCareGiverIdName", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<?> getCareGiverIdName() {
+	public ResponseEntity<?> getCareGiverIdName(@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "10") Integer pageSize,
+			@RequestParam(value = "careGiverName", required = false) String careGiverName) {
 		ResponseEntity response = null;
-		List<CareGiver> caregiverlist=careGiverService.getCareGiverIdName();
+		List<CareGiver> caregiverlist=careGiverService.getCareGiverIdName(pageNo,pageSize,careGiverName);
 		List<Object> obj=new ArrayList<Object>();
 		for (CareGiver careGiverListing : caregiverlist) {
 			Long id=careGiverListing.getCareGiverId();

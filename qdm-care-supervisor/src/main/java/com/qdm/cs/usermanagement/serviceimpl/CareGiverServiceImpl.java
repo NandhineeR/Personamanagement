@@ -376,8 +376,12 @@ public class CareGiverServiceImpl implements CareGiverService {
 	}
 
 	@Override
-	public List<CareGiver> getCareGiverIdName() {
-		return careGiverRepository.findAll();
+	public List<CareGiver> getCareGiverIdName(Integer pageNo, Integer pageSize, String careGiverName) {
+		Pageable paging = PageRequest.of(pageNo, pageSize);
+		// Pageable paging = PageRequest.of(pageNo, pageSize,Sort.by("careGiverName"));
+		Page<CareGiver> pagedResult = careGiverRepository.findByCareGiverName(careGiverName.toLowerCase(), paging);
+		return pagedResult.hasContent() ? pagedResult.getContent() : new ArrayList<CareGiver>();
+		
 	}
 
 }
