@@ -3,7 +3,9 @@ package com.qdm.cs.usermanagement.serviceimpl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.qdm.cs.usermanagement.dto.FormDataDTO;
+import com.qdm.cs.usermanagement.dto.LabelValuePair;
 import com.qdm.cs.usermanagement.entity.CareCoordinator;
 import com.qdm.cs.usermanagement.entity.Category;
 import com.qdm.cs.usermanagement.entity.Skills;
@@ -212,5 +215,17 @@ public class CareCoordinatorServiceImpl implements CareCoordinatorService {
 			data.add(skillList);
 		}
 		return data;
+	}
+
+	@Override
+	public List<Object> getCoordinatorListLabelValuePair() {
+		List<Object> list=new ArrayList<Object>();
+		List<CareCoordinator> careCoordinator=careCoordinatorRepository.findAll();
+		for (CareCoordinator careCoordinatorList : careCoordinator) {
+			Long id=careCoordinatorList.getCareCoordinatorId();
+			LabelValuePair careCoordinatorData=new LabelValuePair(id.intValue(), careCoordinatorList.getCareCoordinatorName());
+			list.add(careCoordinatorData);
+		}
+		return list;
 	}
 }

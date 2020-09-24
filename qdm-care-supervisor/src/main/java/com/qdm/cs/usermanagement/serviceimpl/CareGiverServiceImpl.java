@@ -3,7 +3,9 @@ package com.qdm.cs.usermanagement.serviceimpl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -19,8 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.qdm.cs.usermanagement.dto.FormDataDTO;
+import com.qdm.cs.usermanagement.dto.LabelValuePair;
 import com.qdm.cs.usermanagement.entity.CareGiver;
 import com.qdm.cs.usermanagement.entity.CareProvider;
 import com.qdm.cs.usermanagement.entity.Category;
@@ -141,7 +145,7 @@ public class CareGiverServiceImpl implements CareGiverService {
 				if (certificate.getCertificateId() == 0 && certificate.getCertificateName() != null) {
 					certificateRepository.save(new Certification(certificate.getCertificateName()));
 				}
-				if (certificate.getOrganizationId() == 0  && certificate.getOrganizationName() != null) {
+				if (certificate.getOrganizationId() == 0 && certificate.getOrganizationName() != null) {
 					issuingOrganizationRepository.save(new IssuingOrgranization(certificate.getOrganizationName()));
 				}
 			}
@@ -199,10 +203,10 @@ public class CareGiverServiceImpl implements CareGiverService {
 			}
 			if (formDataDTO.getExperience() != null) {
 				for (Experience experience : formDataDTO.getExperience()) {
-					if (experience.getRoleId() == 0  && experience.getRoleName() != null) {
+					if (experience.getRoleId() == 0 && experience.getRoleName() != null) {
 						roleRepository.save(new Role(experience.getRoleName()));
 					}
-					if (experience.getOrganizationId() == 0 && experience.getOrganizationName()!= null) {
+					if (experience.getOrganizationId() == 0 && experience.getOrganizationName() != null) {
 						organizationRepository.save(new Organization(experience.getOrganizationName()));
 					}
 				}
@@ -381,7 +385,55 @@ public class CareGiverServiceImpl implements CareGiverService {
 		// Pageable paging = PageRequest.of(pageNo, pageSize,Sort.by("careGiverName"));
 		Page<CareGiver> pagedResult = careGiverRepository.findByCareGiverName(careGiverName.toLowerCase(), paging);
 		return pagedResult.hasContent() ? pagedResult.getContent() : new ArrayList<CareGiver>();
-		
+
+	}
+
+	@Override
+	public List<Object> getCareGiverBasedOnProvider(Integer careProviderId) {
+		List<Object> list=new ArrayList<Object>();
+		Query q = em.createNativeQuery("SELECT caregiver_caregiver_id from tb_giver_provider WHERE provider_id = ?1");
+		q.setParameter(1, careProviderId);	
+		for (Object careGiversListId : q.getResultList()) {
+			String stringToConvert = String.valueOf(careGiversListId);
+		    Long convertedLong = Long.parseLong(stringToConvert);
+			Optional<CareGiver> careGiver=careGiverRepository.findByCareGiverId(convertedLong);
+			if(careGiver.isPresent()) {
+				Map<String, Object> careGiversList=new HashMap<String, Object>();
+				careGiversList.put("value", careGiver.get().getCareGiverId());
+				careGiversList.put("label", careGiver.get().getCareGiverName());
+				careGiversList.put("rating", "");
+				careGiversList.put("availability", "");
+				careGiversList.put("is_known_to_client", "");
+				if (careGiver.get().getUploadPhoto() != null) {
+					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+							.path("/careGiver/downloadFile/" + careGiver.get().getUploadPhoto().getId()).toUriString();
+					careGiversList.put("profile_pic", fileDownloadUri);
+				} else {
+					careGiversList.put("profile_pic", "");
+				}
+				list.add(careGiversList);
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<LabelValuePair> getCareGiverBasedOnProviderLabelValuePair(Integer careProviderId) {
+		List<LabelValuePair> careGiverList=new ArrayList<LabelValuePair>();
+		Query q = em.createNativeQuery("SELECT caregiver_caregiver_id from tb_giver_provider WHERE provider_id = ?1");
+		q.setParameter(1, careProviderId);	
+		for (Object careGiversListId : q.getResultList()) {
+			String stringToConvert = String.valueOf(careGiversListId);
+		    Long convertedLong = Long.parseLong(stringToConvert);
+			
+			Optional<CareGiver> careGiver=careGiverRepository.findByCareGiverId(convertedLong);
+			if(careGiver.isPresent()) {
+				Long id=careGiver.get().getCareGiverId();
+				LabelValuePair labelValuePair=new LabelValuePair(id.intValue(), careGiver.get().getCareGiverName());
+				careGiverList.add(labelValuePair);
+			}
+		}
+		return careGiverList;
 	}
 
 }

@@ -3,9 +3,11 @@ package com.qdm.cs.usermanagement.service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.qdm.cs.usermanagement.dto.FormDataDTO;
+import com.qdm.cs.usermanagement.dto.LabelValuePair;
 import com.qdm.cs.usermanagement.entity.CareGiver;
 import com.qdm.cs.usermanagement.entity.Category;
 import com.qdm.cs.usermanagement.entity.Skills;
@@ -45,5 +47,9 @@ public interface CareGiverService {
 	CareGiver deleteCertificate(Long careGiverId, Integer certificateId);
 
 	List<CareGiver> getCareGiverIdName(Integer pageNo, Integer pageSize, String careGiverName);
+
+	List<Object> getCareGiverBasedOnProvider(Integer careProviderId);
+
+	List<LabelValuePair> getCareGiverBasedOnProviderLabelValuePair(Integer careProviderId);
 
 }

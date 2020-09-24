@@ -424,4 +424,22 @@ public class CareGiverController {
 				ResponseType.SUCCESS.getResponseCode(), "", obj), HttpStatus.CREATED);
 		return response;
 	}
+	
+	@GetMapping(value="getCareGiverBasedOnProvider", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getCareGiverBasedOnProvider(@RequestParam Integer careProviderId) {
+		ResponseEntity response = null;
+		List<Object> careGiversList= careGiverService.getCareGiverBasedOnProvider(careProviderId);
+		response = new ResponseEntity(new ResponseInfo(ResponseType.SUCCESS.getResponseMessage(),
+				ResponseType.SUCCESS.getResponseCode(), "", careGiversList), HttpStatus.CREATED);
+		return response;
+	}
+	
+	@GetMapping(value="getCareGiverBasedOnProviderLabelValuePair", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getCareGiverBasedOnProviderLabelValuePair(@RequestParam Integer careProviderId) {
+		ResponseEntity response = null;
+		List<LabelValuePair> careGiversList= careGiverService.getCareGiverBasedOnProviderLabelValuePair(careProviderId);
+		response = new ResponseEntity(new ResponseInfo(ResponseType.SUCCESS.getResponseMessage(),
+				ResponseType.SUCCESS.getResponseCode(), "", careGiversList), HttpStatus.CREATED);
+		return response;
+	}
 }

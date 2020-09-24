@@ -40,4 +40,6 @@ public interface CareCoordinatorService {
 
 	List<Skills> getSkillsListById(Collection<Integer> skills);
 
+	List<Object> getCoordinatorListLabelValuePair();
+
 }

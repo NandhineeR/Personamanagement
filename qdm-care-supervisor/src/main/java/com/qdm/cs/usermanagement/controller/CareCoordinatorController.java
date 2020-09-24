@@ -347,5 +347,14 @@ public class CareCoordinatorController {
 			return response;
 		}
 	}
+	
+	@GetMapping(value="/getCoordinatorListLabelValuePair", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getCoordinatorListLabelValuePair() {
+		ResponseEntity response = null;
+		List<Object> careCoordinatorList= careCoordinatorService.getCoordinatorListLabelValuePair();
+		response = new ResponseEntity(new ResponseInfo(ResponseType.SUCCESS.getResponseMessage(),
+				ResponseType.SUCCESS.getResponseCode(), "", careCoordinatorList), HttpStatus.CREATED);
+		return response;
+	}
 
 }
